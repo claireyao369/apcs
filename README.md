@@ -1,2 +1,2 @@
-# apcs
-This repository is for documenting my AP Computer Science Journey
+# Computer Science
+This repository is for documenting my computer science journey
