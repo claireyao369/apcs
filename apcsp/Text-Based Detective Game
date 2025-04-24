@@ -1,0 +1,171 @@
+import time
+
+# Introduction of the rules of the game
+print("Welcome, Detective Casey! I am your personal AI assistant! Here are some quick rules and some things worth knowing during your work:\n1. \033[33mYellow texts\033[0m indicates a collectable item that will be stored in your inventory\n2. \033\033[31mRed texts\033[0m indicates a NPC\n3. \033[34mBlue texts\033[0m indicates interactive items\n4. \033[32mGreen texts\033[0m indicates narration/hints\n5. ALWAYS input the EXACT input indicated, or else the program will not run properly\nGood luck, and I will always be available when you need a hint!\n\n")
+
+# Start of the game (background information)
+print("===================================")
+print("You opened your mailbox, there is \033[33ma letter\033[0m inside...")
+print(" --------------------------------------------------------------\n|                                                              |")
+print("|  Dear Detective Casey,                                       |")
+print("|  Greetings, and I hope this letter finds you in good health  |")
+print("|  . Check apartment 123, you will find Lucas Blackwood's      |")
+print("|  body there. I am not playing a game, and you should get in- |")
+print("|  to work ASAP. I heard Ray Kensington has not been sighted   |")
+print("|  recently, if I were you, I would contact him. Here is his   |")
+print("|  number: 251-433-0608. I warn you, it is more complicated    |")
+print("|  than you thought...                                         |")
+print("|                                                              |")
+print("|  Best regards,                                               |")
+print("|  A friend                                                    |")
+print("|                                                              |")
+print(" -------------------------------------------------------------- ")
+print("\nYou felt chill on your back. Your \033[34mvirtual phone\033[0m lit up...")
+
+# Initial constant variables
+contacts = {
+    "Ray Kensington": "251-433-0608",
+    "Stella Fredman": "251-433-0609",
+    "Dr. Felix Rogers": "251-433-0610",
+    "Grace Li": "251-433-0611"
+}
+
+# Initialize all variables
+gameEnd = False
+evidences = {
+  "Letter from a friend" : " --------------------------------------------------------------\n|                                                              |\n|  Dear Detective Casey,                                       |\n|  Greetings, and I hope this letter finds you in good health  |\n|  . Check apartment 123, you will find Lucas Blackwood's      |\n|  body there. I am not playing a game, and you should get in- |\n|  to work ASAP. I heard Ray Kensington has not been sighted   |\n|  recently, if I were you, I would contact him. Here is his   |\n|  number: 251-433-0608. I warn you, it is more complicated    |\n|  than you thought...                                         |\n|                                                              |\n|  Best regards,                                               |\n|  A friend                                                    |\n|                                                              |\n -------------------------------------------------------------- "
+}
+currentView = "home"
+game_state = "Act 1"
+contact_names = []
+contact_numbers = []
+# 1. 📩 Messages  
+# 2. ☎️ Contacts  
+# 3. 📁 Evidence  
+# 4. 🌐 Browser  
+# 5. 🧩 Puzzles (Locked)
+
+# Views
+def homescreenView():
+  print(" =========[\N{mobile phone} VIRTUAL PHONE HOME SCREEN]=========")
+  print("")
+  print("1. 📩 Messages")
+  print("2. \N{file folder} Evidence Folder")
+  print("3. \N{globe with meridians} Google")
+  print("4. \N{eye} AI (Hint)")
+  print(" ========================================= ")
+  choice = input("Select an option (1-4): ")
+  if choice == "1":
+    return "messages"
+  elif choice == "2":
+    return "evidence"
+  elif choice == "3":
+    return "google"
+  else:
+    print("Invalid choice")
+    return "home"
+
+def messageView():
+  def chatWithRay(gameState):
+    if gameState == "Act 1":
+      print("------CHAT WITH \033[31mRAY KENSINGTON\033[0m------")
+      print("\033[31mRay\033[0m: Hello, um who r u? How did u get my number?")
+      uinput1 = input("You: ")
+      time.sleep(1)
+      print("\033[31mRay\033[0m is typing...")
+      time.sleep(2)
+      if "detective casey" in uinput1.lower() or "detective" in uinput1.lower() or "casey" in uinput1.lower():
+        print("\033[31mRay\033[0m: Oh ok, well i didnt do nothing bad...")
+      else:
+        print("\033[31mRay\033[0m: I dont know what u r talking about, sorry I cant help")
+        return "messages"
+      time.sleep(1)
+      print("\033[31mRay\033[0m is typing...")
+      time.sleep(2)
+        
+  def chatWithStella(gameState):
+    return
+  def chatWithFelix(gameState):
+    return
+  def chatWithFriend(gameState):
+    return
+    
+    
+  print(" =========[📨 VIRTUAL PHONE MESSAGES]========")
+
+  if len(contact_names) > 0:
+    print("Your Current Contacts:")
+    for i in range(len(contact_names)):
+      print(f"{i + 1}. {contact_names[i]} ({contact_numbers[i]})")
+  else:
+    print("You don't have any contacts yet...")
+  print("\nWhat would you like to do?")
+  print("1. Add a new contact")
+  print("2. Start a chat with an existing contact")
+  print("Type 'exit' to return to the home screen.")
+
+  choice = input("Enter your choice(1/2/exit): ")
+
+  if choice == '1':
+    name = input("Enter the contact's name: ")
+    number = input("Enter the contact's number: ")
+    if number == "" or name == "":
+      print("Information incomplete")
+    if contacts[name] != number:
+      print("⚠️ Contact not found")
+    contact_names.append(name)
+    contact_numbers.append(number)
+    print(f"\n✅ Contact '{name}' added.")
+    input("Press enter to return to the home screen.")
+    print(" =========================================")
+    return "home"
+  elif choice == '2':
+    search = input("Enter a name or number to chat with: ")
+    found = False
+    for i in range(len(contact_names)):
+      if search.lower() == contact_names[i].lower() or search == contact_numbers[i]:
+        print(f"\n📱 Opening chat with {contact_names[i]}...")
+        # NOTES FROM LAST NIGHT: Insert chats here
+        if contact_names[i] == "Ray Kensington":
+          chatWithRay(game_state)
+        elif contact_names[i] == "Stella Fredman":
+          chatWithStella(game_state)
+        elif contact_names[i] == "Dr. Felix Rogers":
+          chatWithFelix(game_state)
+        elif contact_names[i] == "A Friend":
+          chatWithFriend(game_state)
+        found = True
+        break
+    if not found:
+      print("\n⚠️ Contact not found.")
+      input("Press enter to return to the home screen.")
+      return "home"
+
+# View changer
+if currentView == "home":
+  currentView = homescreenView()
+elif currentView == "messages":
+  currentView = messageView()
+elif currentView == "google":
+  currentView = googleView()
+elif currentView == "evidence":
+  currentView = evidenceView()
+else:
+  print("Unrecognized option. Returning to home screen.")
+  time.sleep(1)
+  currentView = "home"
+
+# While Loop for the entire game
+while not gameEnd:
+  if currentView == "home":
+    currentView = homescreenView()
+  elif currentView == "messages":
+    currentView = messageView()
+  elif currentView == "google":
+    currentView = googleView()
+  elif currentView == "evidence":
+    currentView = evidenceView()
+  else:
+    print("Invalid option. Returning to home screen.")
+    currentView = "home"
+
