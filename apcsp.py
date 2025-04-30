@@ -1,15 +1,16 @@
+# AP Computer Science Pirnciples
+# Game Name: The Blackwood Case
+
+# Import libraries
 import time
 import random
 
 # Introduction of the rules of the game
-# print("Welcome, Detective Casey! I am your personal AI assistant! Here are some quick rules and some things worth knowing during your work:\n1. \033[33mYellow texts\033[0m indicates a collectable item that will be stored in your inventory\n2. \033\033[31mRed texts\033[0m indicates a NPC\n3. \033[34mBlue texts\033[0m indicates interactive items\n4. \033[32mGreen texts\033[0m indicates narration/hints\n5. ALWAYS input the EXACT input indicated, or else the program will not run properly\nGood luck, and I will always be available when you need a hint!\n\n")
+# Welcome, Detective Casey! I am your personal AI assistant! Here are some quick rules and some things worth knowing during your work: ALWAYS input the EXACT input indicated, or else the program will not run properly. Good luck!
 
 # Start of the game (background information)
-# print("===================================")
 
-# NOTES FROM LAST NIGHT:
-# 1. Add a anti-stupid code for every chat message
-# 2. Add comments
+# Starting the game
 print("You opened your mailbox, there is \033[33ma letter\033[0m inside...")
 print(" --------------------------------------------------------------\n|                                                              |")
 print("|  Dear Detective Casey,                                       |")
@@ -29,16 +30,17 @@ print("\nWhen you searched around Lucas's apartment, you found \033[34mLucas's J
 print("\nYou felt chill on your back. Your \033[34mvirtual phone\033[0m lit up...")
 print("\033[32mHint: Use 'Messages' to contact Ray Kensington\033[0m")
 
-# Initial constant variables
+# Initial constant librar, for checking if contact information is right
 contacts = {
     "Ray Kensington": "251-433-0608",
     "Stella Fredman": "888-498-1778",
     "Felix Rogers": "770-555-5948"
 }
 
-# Initialize all variables
+# Initialize boolean variable to detect the progress of the game
 gameEnd = False
 
+# Initialize messages libraries
 ray_messages = {
   "detective_intro" : [
     "Woa ok, well i didnt do nothing bad, how can i help you tho?",
@@ -115,13 +117,11 @@ stella_messages = {
   "Ray told me about how he suspect Lucas is up to something really bad...",
   "Ray said Lucas doesnt seem like a good person to be around with..."
   ],
-  # Ray said his therapist Dr. Felix Rogers suggest him to not go around Lucas...
   "therapist_contact" : [
     "Ok..Here is Felix Rogers's contact, name: Felix Rogers, number: 770-555-5948...",
     "Fine, here is his contact, name: Felix Rogers, number: 770-555-5948",
     "Ok, here is his contact, name: Felix Rogers, number: 770-555-5948"
   ]
-  # She has to go, but warns the player about the danger
 }
 
 urgent_stella_messages = {
@@ -169,6 +169,8 @@ felix_messages = {
     "Emotions like jealousy and fear are often uncontrollable for people like Ray, but violence? No, I never sense that"
   ]
 }
+
+# Initialize all game variables
 currentView = "home"
 game_state = "Act 1"
 ray_online = True
@@ -176,13 +178,8 @@ stella_online = True
 felix_online = True
 contact_names = []
 contact_numbers = []
-# 1. 📩 Messages  
-# 2. ☎️ Contacts  
-# 3. 📁 Evidence  
-# 4. 🌐 Browser  
-# 5. 🧩 Puzzles (Locked)
 
-# Views
+# Define homeView function (abstraction)
 def homescreenView():
   print(" =========[\N{mobile phone} VIRTUAL PHONE HOME SCREEN]=========")
   print("")
@@ -198,35 +195,42 @@ def homescreenView():
     print("Invalid choice")
     return "home"
 
+# Define messageViews (abstraction)
 def messageView():
   global game_state
   global ray_online
   global stella_online
-  
+
+  # Chat with Ray messages: containing Act 1 and Act 5
   def chatWithRay(gameState):
     global ray_online
     global game_state
+    # If Ray is offline, the messages will not continue
     if ray_online == False:
       print("\033[31mRay Kensington\033[0m appears offline...")
       input("Press enter to return to the home screen.")
       return "home"
+    # If Ray is online
     if gameState == "Act 1":
       print("------CHAT WITH \033[31mRAY KENSINGTON\033[0m------")
-      # detective_intro
+      # messages library: "detective_intro" in "ray_messages"
       ray_online = True
       print("\033[31mRay\033[0m: Hello, um who r u?")
       print("\033[32mHint: Tell him your name\033[0m")
       uinput1 = input("You: ").lower()
+      # Time.sleep to simulate real life chats
       time.sleep(1)
       print("\033[31mRay\033[0m is typing...")
       time.sleep(2)
+      # If else statement to detect the keyword in the user input in order to provide responses
       if "detective" in uinput1 or "casey" in uinput1:
         print("\033[31mRay\033[0m: " + random.choice(ray_messages["detective_intro"]))
       else:
+        # If the player doesn't go with the keyword, return to home
         print("\033[31mRay\033[0m: I dont know what u r talking about, sorry I cant help")
         print("\033[32mChat ended, you can restart in messages\033[0m")
         return "messages"
-      # apartment_confront_about_lucas
+      # messages library: "apartment_confront_about_lucas" in "ray_messages"
       print("\033[32mHint: Ask about Lucas Blackwood\033[0m")
       uinput2 = input("You: ").lower()
       time.sleep(2)
@@ -234,7 +238,11 @@ def messageView():
       time.sleep(2)
       if "lucas" in uinput2:
         print("\033[31mRay\033[0m: " + random.choice(ray_messages["apartment_confront_about_lucas"]))
-      # ask_about_stella
+      else:
+        print("\033[31mRay\033[0m: I dont know what u r talking about, sorry I cant help")
+        print("\033[32mChat ended, you can restart in messages\033[0m")
+        return "messages"
+      # messages library: "ask_about_stella" in "ray_messages"
       print("\033[32mHint: Ask about Stella\033[0m")
       uinput3 = input("You: ").lower()
       time.sleep(2)
@@ -244,7 +252,7 @@ def messageView():
         print("\033[31mRay\033[0m: " + random.choice(ray_messages["ask_about_stella"]))
       else:
         print("\033[31mRay\033[0m: Ok i dont really have time for your questions, i gotta meet with Stella")
-      # ask_about_ray_stella
+      # messages library: "ask_about_ray_stella" in "ray_messages"
       print("\033[32mHint: Ask why Ray is with Stella\033[0m")
       uinput4 = input("You: ").lower()
       time.sleep(2)
@@ -252,6 +260,10 @@ def messageView():
       time.sleep(2)
       if "what did" in uinput4 or "you and stella" in uinput4 or "night" in uinput4 or "stella and you" in uinput4 or "you guys" in uinput4 or "with you" in uinput4 or "with her" in uinput4 or "with stella" in uinput4:
         print("\033[31mRay\033[0m: " + random.choice(ray_messages["ask_about_ray_stella"]))
+      else:
+        print("\033[31mRay\033[0m: I dont know what u r talking about, sorry I cant help")
+        print("\033[32mChat ended, you can restart in messages\033[0m")
+        return "messages"
       time.sleep(2)
       print("\033[31mRay\033[0m is typing...")
       time.sleep(2)
@@ -264,10 +276,9 @@ def messageView():
       return "home"
     elif gameState == "Act 5":
       print("------CHAT WITH \033[31mRAY KENSINGTON\033[0m------")
-      # detective_intro
-      ray_online = True
+      # messages library: "detective_intro" in "ray_messages"
       print("\033[31mRay\033[0m: " + random.choice(unstable_ray_messages["detective_intro"]))
-      # lucas_accuse
+      # messages library: "lucas_accuse" in "unstable_ray_messages"
       print("\033[32mHint: Say this is about Lucas\033[0m")
       uinput1 = input("You: ").lower()
       time.sleep(2)
@@ -275,7 +286,7 @@ def messageView():
       time.sleep(2)
       if "lucas" in uinput1:
         print("\033[31mRay\033[0m: " + random.choice(unstable_ray_messages["lucas_accuse"]))
-      # truth_about_felix
+      # messages library: "truth_about_felix" in "unstable_ray_messages"
       print("\033[32mHint: Calm Ray down and talk about the truth about Dr. Rogers\033[0m")
       uinput2 = input("You: ").lower()
       time.sleep(2)
@@ -283,7 +294,7 @@ def messageView():
       time.sleep(2)
       if "rogers" in uinput2 or "felix" in uinput2 or "truth" in uinput2:
         print("\033[31mRay\033[0m: " + random.choice(unstable_ray_messages["truth_about_felix"]))
-      # truth_in_journal
+      # messages library: "truth_in_journal" in "unstable_ray_messages"
       print("\033[32mHint: Tell him you looked at the journal\033[0m")
       uinput3 = input("You: ").lower()
       time.sleep(2)
@@ -320,7 +331,7 @@ def messageView():
       return "home"
     if gameState == "Act 2":
       print("------CHAT WITH \033[31mSTELLA FREDMAN\033[0m------")
-      # detective_intro
+      # messages library: "detective_intro" in "stella_messages"
       stella_online = True
       print("\033[31mStella\033[0m: Hi! How can I help you!")
       print("\033[32mHint: Tell him your name\033[0m")
@@ -330,7 +341,11 @@ def messageView():
       time.sleep(2)
       if "detective" in uinput1 or "casey" in uinput1 or "lucas" in uinput1:
         print("\033[31mStella\033[0m: " + random.choice(stella_messages["detective_intro"]))
-      # about_ray_alibi
+      else:
+        print("\033[31mStella\033[0m: Sorry, that I cant help...So I will have to leave you there")
+        print("\033[32mChat ended, you can restart in messages\033[0m")
+        return "messages"
+      # messages library: "about_ray_alibi" in "stella_messages"
       print("\033[32mHint: Ask about her and Ray\033[0m")
       uinput2 = input("You: ").lower()
       time.sleep(2)
@@ -338,7 +353,11 @@ def messageView():
       time.sleep(2)
       if "ray" in uinput2 or "with ray" in uinput2 or "with" in uinput2:
         print("\033[31mStella\033[0m: " + random.choice(stella_messages["about_ray_alibi"]))
-      # about_lucas
+      else:
+        print("\033[31mStella\033[0m: Sorry, that I cant help...So I will have to leave you there")
+        print("\033[32mChat ended, you can restart in messages\033[0m")
+        return "messages"
+      # messages library: "about_lucas" in "stella_messages"
       print("\033[32mHint: Ask about her relationship with Lucas Blackwood\033[0m")
       uinput3 = input("You: ").lower()
       time.sleep(2)
@@ -346,7 +365,11 @@ def messageView():
       time.sleep(2)
       if "lucas" in uinput3:
         print("\033[31mStella\033[0m: " + random.choice(stella_messages["about_lucas"]))
-      # confess_about_lucas
+      else:
+        print("\033[31mStella\033[0m: Sorry, that I cant help...So I will have to leave you there")
+        print("\033[32mChat ended, you can restart in messages\033[0m")
+        return "messages"
+      # messages library: "confess_about_lucas" in "stella_meassages"
       print("\033[32mHint: Lie that Ray already told you about everything, so she can confess\033[0m")
       uinput4 = input("You: ").lower()
       time.sleep(2)
@@ -354,7 +377,11 @@ def messageView():
       time.sleep(2)
       if "lucas" in uinput4 or "already" in uinput4 or "ray had" in uinput4 or "ray had" in uinput4 or "ray already" in uinput4:
         print("\033[31mStella\033[0m: " + random.choice(stella_messages["confess_about_lucas"]))
-      # about_ray_lucas
+      else:
+        print("\033[31mStella\033[0m: Sorry, that I cant help...So I will have to leave you there")
+        print("\033[32mChat ended, you can restart in messages\033[0m")
+        return "messages"
+      # messages library: "about_ray_lucas" in "stella_messages"
       print("\033[32mHint: Now ask about Ray and Lucas\033[0m")
       uinput5 = input("You: ").lower()
       time.sleep(2)
@@ -362,7 +389,11 @@ def messageView():
       time.sleep(2)
       if "lucas" in uinput5 and "ray" in uinput5:
         print("\033[31mStella\033[0m: " + random.choice(stella_messages["about_ray_lucas"]))
-      # about_conversation
+      else:
+        print("\033[31mStella\033[0m: Sorry, that I cant help...So I will have to leave you there")
+        print("\033[32mChat ended, you can restart in messages\033[0m")
+        return "messages"
+      # messages library: "about_conversation" in "stella_messages"
       print("\033[32mHint: Ask about what did Stella and Ray talked about that night\033[0m")
       uinput6 = input("You: ").lower()
       time.sleep(2)
@@ -370,11 +401,16 @@ def messageView():
       time.sleep(2)
       if "you and ray" in uinput6 or "ray and you" in uinput6 or "you guys" in uinput6 or "you two" in uinput6 or "the night" in uinput6 or "talk about" in uinput6:
         print("\033[31mStella\033[0m: " + random.choice(stella_messages["about_conversation"]))
+      else:
+        print("\033[31mStella\033[0m: Sorry, that I cant help...So I will have to leave you there")
+        print("\033[32mChat ended, you can restart in messages\033[0m")
+        return "messages"
       time.sleep(2)
       print("\033[31mStella\033[0m is typing...")
       time.sleep(2)
       print("\033[31mStella\033[0m: Ray said his therapist Dr. Felix Rogers suggest him to not go around Lucas...")
       # therapist_contact
+      # messages library: "therapist_contact" in "stella_messaes"
       print("\033[32mHint: Ask about Felix Rogers\033[0m")
       uinput7 = input("You: ").lower()
       time.sleep(2)
@@ -382,6 +418,10 @@ def messageView():
       time.sleep(2)
       if "felix" in uinput7 or "rogers" in uinput7 or "dr.felix rogers" in uinput7 or "dr. felix rogers" in uinput7 or "contact" in uinput7:
         print("\033[31mStella\033[0m: " + random.choice(stella_messages["therapist_contact"]))
+      else:
+        print("\033[31mStella\033[0m: Sorry, that I cant help...So I will have to leave you there")
+        print("\033[32mChat ended, you can restart in messages\033[0m")
+        return "messages"
       # After the conversation
       time.sleep(2)
       print("\033[31mStella\033[0m is typing...")
@@ -426,7 +466,7 @@ def messageView():
       return "home"
     if game_state == "Act 3":
       print("------CHAT WITH \033[31mFELIX ROGERS\033[0m------")
-      # detective_intro
+      # messages library: "detective_intro" in "felix_messages"
       stella_online = True
       print("\033[31mFelix\033[0m: Hello, may I have your name?")
       print("\033[32mHint: Tell him your name\033[0m")
@@ -436,7 +476,11 @@ def messageView():
       time.sleep(2)
       if "detective" in uinput1 or "casey" in uinput1:
         print("\033[31mFelix\033[0m: " + random.choice(felix_messages["detective_intro"]))
-      # about_lucas_case
+      else:
+        print("\033[31mFelix\033[0m: Sorry, that I cant help...So I will have to leave you there")
+        print("\033[32mChat ended, you can restart in messages\033[0m")
+        return "messages"
+      # messages library: "about_lucas_case" in "felix_messages"
       print("\033[32mHint: Now ask about Lucas's case\033[0m")
       uinput2 = input("You: ").lower()
       time.sleep(2)
@@ -444,7 +488,10 @@ def messageView():
       time.sleep(2)
       if "lucas" in uinput2:
         print("\033[31mFelix\033[0m: " + random.choice(felix_messages["about_lucas_case"]))
-      # about_ray
+      else:
+        print("\033[31mFelix\033[0m: Sorry, that I cant help...So I will have to leave you there")
+        print("\033[32mChat ended, you can restart in messages\033[0m")
+      # messages library: "about_ray" in "felix_messages"
       print("\033[32mHint: Ask about Ray\033[0m")
       uinput3 = input("You: ").lower()
       time.sleep(2)
@@ -452,7 +499,10 @@ def messageView():
       time.sleep(2)
       if "ray" in uinput3:
         print("\033[31mFelix\033[0m: " + random.choice(felix_messages["about_ray"]))
-      # about_ray_lucas
+      else:
+        print("\033[31mFelix\033[0m: Sorry, that I cant help...So I will have to leave you there")
+        print("\033[32mChat ended, you can restart in messages\033[0m")
+      # messages library: "about_ray_lucas" in "felix_messages"
       print("\033[32mHint: Now ask about Ray and Lucas\033[0m")
       uinput4 = input("You: ").lower()
       time.sleep(2)
@@ -460,7 +510,10 @@ def messageView():
       time.sleep(2)
       if "lucas" in uinput4 and ("ray" in uinput4 or "him" in uinput4):
         print("\033[31mFelix\033[0m: " + random.choice(felix_messages["about_ray_lucas"]))
-      # about_ray_mental
+      else:
+        print("\033[31mFelix\033[0m: Sorry, that I cant help...So I will have to leave you there")
+        print("\033[32mChat ended, you can restart in messages\033[0m")
+      # messages library: "about_ray_mental" in "felix_messages"
       print("\033[32mHint: Now ask about Ray's emotions\033[0m")
       uinput5 = input("You: ").lower()
       time.sleep(2)
@@ -468,7 +521,10 @@ def messageView():
       time.sleep(2)
       if "ray" in uinput5 or "mental" in uinput5 or "emotion" in uinput5:
         print("\033[31mFelix\033[0m: " + random.choice(felix_messages["about_ray_mental"]))
-      # about_ray_violence
+      else:
+        print("\033[31mFelix\033[0m: Sorry, that I cant help...So I will have to leave you there")
+        print("\033[32mChat ended, you can restart in messages\033[0m")
+      # messages library: "about_ray_violence" in "felix_messages"
       print("\033[32mHint: Now ask about Ray's potential violence act'\033[0m")
       uinput6 = input("You: ").lower()
       time.sleep(2)
@@ -476,6 +532,9 @@ def messageView():
       time.sleep(2)
       if "ray" in uinput6 or "violence" in uinput6 or "aggression" in uinput6 or "aggresive" in uinput6:
         print("\033[31mFelix\033[0m: " + random.choice(felix_messages["about_ray_violence"]))
+      else:
+        print("\033[31mFelix\033[0m: Sorry, that I cant help...So I will have to leave you there")
+        print("\033[32mChat ended, you can restart in messages\033[0m")
       # After conversation
       time.sleep(2)
       print("\033[31mFelix\033[0m is typing...")
@@ -487,6 +546,7 @@ def messageView():
     
   print(" =========[📨 VIRTUAL PHONE MESSAGES]========")
 
+  # Show the list of current contacts
   if len(contact_names) > 0:
     print("\033[32mYour Current Contacts\033[0m:")
     for i in range(len(contact_names)):
@@ -499,7 +559,7 @@ def messageView():
   print("Type 'exit' to return to the home screen.")
 
   choice = input("Enter your choice(1/2/exit): ")
-
+  # Give optimized hints for players
   if choice == '1':
     if game_state == "Act 1":
       name = input("Enter the contact's name (format: Ray Kensington): ")
@@ -557,6 +617,8 @@ def messageView():
       return "home"
       
 def journalView():
+  # The journal can only be accessed through a password, which will be hinted through the chat with Felix Rogers
+  global ray_online
   global game_state
   print(" =========[\N{mobile phone} LUCAS'S JOURNAL]=========")
   print("The journal seems to be covered in blood...")
@@ -614,6 +676,7 @@ def journalView():
     print(" -------------------------------------------------------------- ")
     print("\033[32mHint: Now quick! Talk to Ray about your discovery!\033[0m")
     game_state = "Act 5"
+    ray_online = True
     input("Press enter to return to the home screen.")
     return "home"
   else:
@@ -673,7 +736,7 @@ print("|  Shall we play again sometime?                               |")
 print("|                                                              |")
 print("|  This is fun :)                                              |")
 print("|                                                              |")
-print("|  Wish to see you soon                                        |")
+print("|  Wish to see you soon,                                       |")
 print("|  A friend                                                    |")
 print("|                                                              |")
 print(" -------------------------------------------------------------- ")
